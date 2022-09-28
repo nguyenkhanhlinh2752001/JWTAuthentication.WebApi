@@ -16,7 +16,53 @@ namespace JWTAuthentication.WebApi.Repositories
             _configuration = configuration;
         }
 
-        public async Task<Response> Register(RegisterModel model)
+        public async Task<Response> AdminRegister(RegisterModel model)
+        {
+            var userExist = await _userManager.FindByEmailAsync(model.Email);
+            if (userExist != null)
+                return new Response
+                {
+                    Message = "Admin already exists",
+                    IsSuccess = false
+                };
+            IdentityUser user = new()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username
+            };
+            var rs = await _userManager.CreateAsync(user, model.Password);
+            if (!rs.Succeeded)
+                return new Response
+                {
+                    Message = "Registed failed",
+                    IsSuccess = false,
+                    Errors = rs.Errors.Select(e => e.Description)
+                };
+
+            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+
+            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
+                await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
+                await _userManager.AddToRoleAsync(user, UserRoles.User);
+
+            return new Response
+            {
+                Message = "Register successfully",
+                IsSuccess = true
+            };
+        }
+
+        public Task<Response> Login(LoginModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Response> UserRegister(RegisterModel model)
         {
             var userExist = await _userManager.FindByEmailAsync(model.Email);
             if (userExist != null)

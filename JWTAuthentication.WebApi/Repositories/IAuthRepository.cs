@@ -4,6 +4,8 @@ namespace JWTAuthentication.WebApi.Repositories
 {
     public interface IAuthRepository
     {
-        Task<Response> Register(RegisterModel model);
+        Task<Response> UserRegister(RegisterModel model);
+        Task<Response> AdminRegister(RegisterModel model);
+        Task<Response> Login(LoginModel model);
     }
 }
