@@ -26,5 +26,12 @@ namespace JWTAuthentication.WebApi.Controllers
         {
             return Ok(await _authRepository.AdminRegister(model));
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        {
+            return Ok(await _authRepository.Login(model));
+        }
+
     }
 }
