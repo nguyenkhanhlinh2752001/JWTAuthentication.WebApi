@@ -1,4 +1,5 @@
 using JWTAuthentication.WebApi.Data;
+using JWTAuthentication.WebApi.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,9 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
     };
-}); 
+});
+
+builder.Services.AddTransient<IAuthRepository, AuthRepository>();
 
 
 

@@ -1,6 +1,24 @@
-﻿namespace JWTAuthentication.WebApi.Controllers
+﻿using JWTAuthentication.WebApi.Models;
+using JWTAuthentication.WebApi.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JWTAuthentication.WebApi.Controllers
 {
-    public class AuthController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
+        private readonly IAuthRepository _authRepository;
+        public AuthController(IAuthRepository authRepository)
+        {
+            _authRepository = authRepository;
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        {
+            return Ok(await _authRepository.Register(model));
+        }
     }
 }
